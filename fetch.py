@@ -21,7 +21,7 @@ def is_recent(name):
     return False
 
 # Read sources.
-sources = open('sources').readlines()
+sources = open(os.path.join(os.path.dirname(__file__), 'sources')).readlines()
 
 # Download them.
 for source in sources:
@@ -44,7 +44,9 @@ for source in sources:
 
         subprocess.call(['wget', '-c', '-P', MUSIC_DIR, link])
 
-# Delete old files.
+# Delete old files and recreate mpd playlist.
+subprocess.call(['mpc', 'clear'])
+subprocess.call(['mpc', 'update'])
 files = os.listdir(MUSIC_DIR)
 for f in files:
     # We'll only deal with mp3 files.
@@ -55,5 +57,8 @@ for f in files:
     if not is_recent(f):
         os.remove(os.path.join(MUSIC_DIR, f))
 
-# Load in mpd
+    # Add to playlist.
+    subprocess.call(['mpc', 'add', f])
+
+# Refresh mpd
 subprocess.call(['mpc', 'update'])
