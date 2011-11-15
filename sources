@@ -1,4 +1,8 @@
-http://downloads.bbc.co.uk/podcasts/worldservice/globalnews/rss.xml
-http://downloads.bbc.co.uk/podcasts/worldservice/wbnews/rss.xml
-http://downloads.bbc.co.uk/podcasts/worldservice/docarchive/rss.xml
-http://www.dradio.de/rss/podcast/nachrichten/
+http://downloads.bbc.co.uk/podcasts/worldservice/globalnews/rss.xml	%Y%m%d	bbcgn
+http://downloads.bbc.co.uk/podcasts/worldservice/wbnews/rss.xml	%Y%m%d	bbcwb
+http://downloads.bbc.co.uk/podcasts/worldservice/docarchive/rss.xml	%Y%m%d	bbcdoc
+http://www.dradio.de/rss/podcast/nachrichten/	%Y%m%d	dradio
+http://www.nytimes.com/services/xml/rss/nyt/podcasts/techtalk.xml	/%Y/%m/%d/	nyttt
+http://www.nytimes.com/services/xml/rss/nyt/podcasts/frontpage.xml	/%Y/%m/%d/	nytfp
+http://www.nytimes.com/services/xml/rss/nyt/podcasts/scienceupdate.xml	/%Y/%m/%d/	nytsci
+http://picklemonkey.net/flipper/convert.php?feed=http://itunes.apple.com/us/podcast/the-economist/id151230264	%d %b %Y	eco

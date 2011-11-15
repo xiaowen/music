@@ -13,11 +13,15 @@ import subprocess
 MUSIC_DIR = '/var/lib/mpd/music/'
 
 # Determine whether the given file is recent.
-def is_recent(name):
+def is_recent(name, fmt=None, updated=None):
+    if not fmt:
+        fmt = '_%Y%m%d.mp3'
+
     for d in range(3):
-        dstr = (date.today() - timedelta(days=d)).strftime('%Y%m%d')
-        if dstr in name:
-            return True
+        day = date.today() - timedelta(days=d)
+        dstr = day.strftime(fmt)
+        if dstr in name or (updated and dstr in updated):
+            return day.strftime('%Y%m%d')
     return False
 
 # Read sources.
@@ -29,20 +33,27 @@ for source in sources:
     if source.startswith('#'):
         continue
 
+    source, fmt, prefix = source.strip().split('\t')
+
     feed_data = feedparser.parse(source)
 
     for entry in feed_data.entries:
-        link = entry['links'][-1]['href']
+        try:
+            link = entry['links'][-1]['href']
+        except KeyError:
+            continue
 
         # Only download mp3 files for now.
         if not link.endswith('mp3'):
             continue
 
         # Only download mp3 files that are within the last week.
-        if not is_recent(link):
+        dstr = is_recent(link, fmt, entry.get('updated'))
+        if not dstr:
             continue
 
-        subprocess.call(['wget', '-c', '-P', MUSIC_DIR, link])
+        link2 = '%s_%s_%s.mp3' % (prefix, link.rsplit('/', 1)[-1][:-4], dstr)
+        subprocess.call(['wget', '-c', '-O', os.path.join(MUSIC_DIR, link2), link])
 
 # Delete old files and recreate mpd playlist.
 subprocess.call(['mpc', 'clear'])
@@ -54,7 +65,7 @@ for f in files:
         continue
 
     # If not recent, then delete.
-    if not is_recent(f):
+    if not is_recent(f)[0]:
         os.remove(os.path.join(MUSIC_DIR, f))
 
     # Add to playlist.
