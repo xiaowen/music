@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=MPD Indicator
+Comment=An indicator that displays mpd information.
+GenericName=MPD Indicator
+Categories=GNOME;Utility;
+Exec=indicator-mpd
+Terminal=false
+Type=Application
