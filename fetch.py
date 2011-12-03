@@ -65,8 +65,10 @@ for f in files:
         continue
 
     # If not recent, then delete.
-    if not is_recent(f)[0]:
-        os.remove(os.path.join(MUSIC_DIR, f))
+    if not is_recent(f):
+        full_path = os.path.join(MUSIC_DIR, f)
+        print 'deleting %s' % (full_path)
+        os.remove(full_path)
 
     # Add to playlist.
     subprocess.call(['mpc', 'add', f])
