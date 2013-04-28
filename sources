@@ -5,4 +5,4 @@ http://www.dradio.de/rss/podcast/nachrichten/	%Y%m%d	dradio
 http://www.nytimes.com/services/xml/rss/nyt/podcasts/techtalk.xml	/%Y/%m/%d/	nyttt
 http://www.nytimes.com/services/xml/rss/nyt/podcasts/frontpage.xml	/%Y/%m/%d/	nytfp
 http://www.nytimes.com/services/xml/rss/nyt/podcasts/scienceupdate.xml	/%Y/%m/%d/	nytsci
-http://picklemonkey.net/flipper/convert.php?feed=http://itunes.apple.com/us/podcast/the-economist/id151230264	%d %b %Y	eco
+http://feeds.feedburner.com/economist/	%d %b %Y	eco
