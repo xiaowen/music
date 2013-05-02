@@ -3,7 +3,7 @@
 
   "name": "Podcasts",
   "description": "Play podcasts and streams",
-  "version": "1.0",
+  "version": "1.5",
 
   "browser_action": {
     "default_icon": "icon.png",
@@ -11,7 +11,7 @@
   },
   "background": {
     "page": "background.html",
-    "persistent": false
+    "persistent": true
   },
 
   "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'; style-src 'unsafe-inline' http://code.jquery.com; connect-src http://downloads.bbc.co.uk; img-src http://code.jquery.com; media-src http://*.akamaistream.net http://downloads.bbc.co.uk;",

@@ -11,10 +11,29 @@ var streams = [
         'DRadio Wissen']
 ];
 
-function play(link) {
-    chrome.runtime.getBackgroundPage(function(backgroundPage) {
+// http://stackoverflow.com/questions/6312993/javascript-seconds-to-time-with-format-hhmmss
+String.prototype.toHHMMSS = function () {
+    sec_numb    = parseInt(this, 10); // don't forget the second parm
+    var hours   = Math.floor(sec_numb / 3600);
+    var minutes = Math.floor((sec_numb - (hours * 3600)) / 60);
+    var seconds = sec_numb - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
+}
+
+function play(link) { chrome.runtime.getBackgroundPage(function(backgroundPage) {
         $(backgroundPage.document).find('audio').attr('src', link);
     });
+
+    // Enable all buttons.
+    $('#play-pause').removeAttr('disabled');
+    $('#seek-bar').removeAttr('disabled');
+    $('#mute').removeAttr('disabled');
+    $('#volume-bar').removeAttr('disabled');
 }
 
 // Update the i'th tab.
@@ -113,7 +132,6 @@ $(document).ready(function() {
         $('#tabs').append('<div id="tabs-' + j + '"><h2>' + streams[i][1] + '</h2></div>');
     }
 
-    //$('#tabs').tabs().tabs('refresh');
     $(function() {
         $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
         $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
@@ -124,6 +142,76 @@ $(document).ready(function() {
         var j = ui.newTab.index() - feeds.length;
         if(j >= 0) {
             play(streams[j][0]);
+        }
+    });
+
+    // Bind to all the controls.
+    $('#play-pause').click(function() {
+        chrome.runtime.getBackgroundPage(function(backgroundPage) {
+            var player = $(backgroundPage.document).find('audio').get(0);
+            if(player.paused) {
+                player.play();
+            } else {
+                player.pause();
+            }
+        });
+    });
+ 
+    $('#seek-bar').on('change', function() {
+        chrome.runtime.getBackgroundPage(function(backgroundPage) {
+            var player = $(backgroundPage.document).find('audio').get(0);
+            player.currentTime = $('#seek-bar').get(0).value;
+        });
+    });
+    $('#mute').click(function() {
+    });
+    $('#volume-bar').click(function() {
+    });
+
+    // Listen to all audio events.
+    chrome.runtime.getBackgroundPage(function(backgroundPage) {
+        $player = $(backgroundPage.document).find('audio');
+        player = $player.get(0);
+        $player.on('durationchange', function(x, y, z) {
+            console.log();
+        });
+        $player.on('ended', function(x, y, z) {
+            $('#play-pause').text('Play')
+        });
+        $player.on('pause', function(x, y, z) {
+            $('#play-pause').text('Play')
+        });
+        $player.on('play', function(x, y, z) {
+            $('#play-pause').text('Pause')
+        });
+        $player.on('timeupdate', function(ev) {
+            var left = 0;
+            var done = 0;
+            var duration = 0;
+            if(!isNaN(player.currentTime) && !isNaN(player.duration)) {
+                done = player.currentTime;
+                duration = player.duration;
+                left = duration - done;
+            }
+            var seeker = $('#seek-bar').get(0);
+            seeker.min = 0;
+            seeker.max = duration;
+            seeker.value = done;
+            $('#player-done').text(done.toString().toHHMMSS());
+            $('#player-left').text(left.toString().toHHMMSS());
+        });
+        $player.on('volumechange', function(x, y, z) {
+            console.log();
+        });
+    });
+
+    // Set state of the buttons based on state of player.
+    chrome.runtime.getBackgroundPage(function(backgroundPage) {
+        if($(backgroundPage.document).find('audio').attr('src') != '') {
+            $('#play-pause').removeAttr('disabled');
+            $('#seek-bar').removeAttr('disabled');
+            $('#mute').removeAttr('disabled');
+            $('#volume-bar').removeAttr('disabled');
         }
     });
 });
